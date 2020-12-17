@@ -43,9 +43,12 @@ class Music(commands.Cog):
     @commands.command()
     async def join(self, ctx, *, channel: discord.VoiceChannel):
         if ctx.voice_client is not None:
-            return await ctx.voice_client.move_to(channel)
+            if channel is not None:
+                return await ctx.voice_client.move_to(channel)
+            else:
+                return await ctx.voice_client.move_to(ctx.author.voice.channel)
 
-        await channel.connect()
+        await ctx.author.voice.channel.connect()
 
     @commands.command()
     async def play(self, ctx, *, query):
@@ -65,3 +68,16 @@ class Music(commands.Cog):
                 raise commands.CommandError("Author not connected to a voice channel.")
         elif ctx.voice_client.is_playing():
             ctx.voice_client.stop()
+
+    @commands.command()
+    async def vol(self, ctx, volume: int):
+        if ctx.voice_client is None:
+            return await ctx.send("通話に接続していません")
+
+        ctx.voice_client.source.volume = volume / 10
+        vol_out_txt = "volume:"
+        for i in range(volume):
+            vol_out_txt += "■"
+        for i in range(10 - volume):
+            vol_out_txt += "□"
+        await ctx.send(vol_out_txt)
