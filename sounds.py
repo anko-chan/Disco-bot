@@ -48,7 +48,8 @@ class Music(commands.Cog):
             else:
                 return await ctx.voice_client.move_to(ctx.author.voice.channel)
 
-        await ctx.author.voice.channel.connect()
+        else:
+            await ctx.author.voice.channel.connect()
 
     @commands.command()
     async def play(self, ctx, *, query):
