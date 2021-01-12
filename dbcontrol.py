@@ -8,31 +8,62 @@ c = conn.cursor()
 """
 
 class Memberdb:
-
-    def __init__(self, server):
-        self.server = server
+    def __init__(self, server_id):
+        self.server = server_id
         #self.cursor = 0
 
 
-    def connectdb():
-        members = server + 'members.db'
+    def connectdb(self):
+        members = self.server + 'members.db'
         return sqlite3.connect(members)
 
 
-    def disconnectdb(self, connection):
-        #members = server + 'members.db'
-        #connM = sqlite3.connect(members)
-
+    def disconnectdb(self, connection, cursor):
         connection.commit()
-        connection.close()
+        cursor.close()
 
 
-    def createtable():
-        conn = connectdb()
+    def checktable(self):
+        conn = self.connectdb()
         c = conn.cursor()
 
-        #(id, name, rating)
-        c.execute(
-            'CREATE TABLE memberlist(id INTEGER PRIMARY KEY, name STRING, rating INTEGER)')
-        conn.disconnectdb(conn)
-#
+        try:
+            c.execute('SELECT * FROM memberlist')
+
+            #if not c.fetchone():
+        except Exception as e:
+            #(id in table, name, discord id,rating)
+            c.execute('CREATE TABLE memberlist(id INTEGER PRIMARY KEY, name STRING, discordid INTEGER, rating INTEGER)')
+
+            conn.commit()
+
+        finally:
+            c.close()
+
+    def nodupe(self, id):
+        conn = self.connectdb()
+        c = conn.cursor()
+
+        t = (id,)
+
+        c.execute('SELECT * FROM memberlist WHERE discordid=?', t)
+        if c.fetchone():
+            return False
+        else:
+            return True
+
+    def addMember(self, member, id):
+        newface = False
+        self.checktable()
+
+        conn = self.connectdb()
+        c = conn.cursor()
+
+        line = (member, id, 1)
+
+        if self.nodupe(id):
+            c.execute('INSERT INTO memberlist(name, discordid, rating) VALUES(?, ?, ?)', line)
+            newface = True
+
+        self.disconnectdb(conn, c)
+        return newface

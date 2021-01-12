@@ -10,6 +10,7 @@ import logging
 from general_commands import General
 from config import Config
 from sounds import Music
+from activity import Activity
 
 #logger-------------------------------------------
 client = discord.Client()
@@ -46,4 +47,5 @@ bot = commands.Bot(command_prefix='!', description="this is Partyfinderbot")
 #bot.run(str(Config.boss))
 bot.add_cog(General(bot))
 bot.add_cog(Music(bot))
+bot.add_cog(Activity(bot))
 bot.run(con.token)
