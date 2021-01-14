@@ -21,30 +21,11 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 #--------------------------------------------------
 
-
-"""
-#____________________________________
-#config読み込みと各種セットアップ
-#____________________________________
-config = configparser.ConfigParser()
-config_ini_path = 'settings.ini'
-#configファイルがない場合のエラー
-if not os.path.exists(config_ini_path):
-    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), config_ini_path)
-
-config.read(config_ini_path, encoding='utf-8')
-
-
-#権限設定取得
-boss = config['Boss']['BossID']
-"""
-
 con = Config()
 
 bot = commands.Bot(command_prefix='!', description="this is Partyfinderbot")
 
 
-#bot.run(str(Config.boss))
 bot.add_cog(General(bot))
 bot.add_cog(Music(bot))
 bot.add_cog(Activity(bot))
