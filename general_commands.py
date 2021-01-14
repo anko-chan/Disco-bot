@@ -14,6 +14,7 @@ class General(commands.Cog):
     @commands.command(hidden = True)
     async def shutdown(self, ctx):
         if ctx.author.id == int(con.boss):
+            await ctx.message.delete()
             await ctx.send("Shutting down...")
             await self.bot.close()
         else:
