@@ -30,7 +30,6 @@ class Memberdb:
         try:
             c.execute('SELECT * FROM memberlist')
 
-            #if not c.fetchone():
         except Exception as e:
             #(id in table, name, discord id,rating)
             c.execute('CREATE TABLE memberlist(id INTEGER PRIMARY KEY, name STRING, discordid INTEGER, rating INTEGER)')
@@ -67,3 +66,16 @@ class Memberdb:
 
         self.disconnectdb(conn, c)
         return newface
+
+    def getRatingList(self):
+        self.checktable()
+
+        conn = self.connectdb()
+        c = conn.cursor()
+
+        c.execute('SELECT name, rating FROM memberlist')
+
+        list = c.fetchall()
+        self.disconnectdb(conn, c)
+
+        return list
